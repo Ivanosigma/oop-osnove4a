@@ -45,17 +45,42 @@ class EvidencijaApp:
         self.scrollbar = tk.Scrollbar(self.lista_frame)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.lista_ucenika_text = tk.Text(self.lista_frame, height=10, width=50, yscrollcommand=self.scrollbar.set)
-        self.lista_ucenika_text.pack(side=tk.LEFT, fill="both", expand=True)
+        self.lista_ucenika_listbox = tk.Listbox(self.lista_frame, height=10, width=50, yscrollcommand=self.scrollbar.set)
+        self.lista_ucenika_listbox.pack(side=tk.LEFT, fill="both", expand=True)
 
-        self.scrollbar.config(command=self.lista_ucenika_text.yview)
+        self.scrollbar.config(command=self.lista_ucenika_listbox.yview)
+    def odaberite_ucenika(self):
+        selected_index = self.lista_ucenika_listbox.curselection()
+        if selected_index:
+            selected_ucenik = Ucenik.ucenici[selected_index[0]]
+            self.ime_entry.delete(0, tk.END) # Clear the current content
+            self.ime_entry.insert(0, selected_ucenik.ime) # Insert the selected student's name
+            self.prezime_entry.delete(0, tk.END) # Clear the current content
+            self.prezime_entry.insert(0, selected_ucenik.prezime) # Insert the selected student's last name
+            self.razred_entry.delete(0, tk.END) # Clear the current content
+            self.razred_entry.insert(0, selected_ucenik.razred) # Insert the selected student's class
+
+    def spremi_izmjene(self):
+        selected_index = self.lista_ucenika_listbox.curselection()
+        if selected_index:
+            index = selected_index[0]
+            ucenik_za_izmjenu = Ucenik.ucenici[index]
+            ucenik_za_izmjenu.ime = self.ime_entry.get()
+            ucenik_za_izmjenu.prezime = self.prezime_entry.get()
+            ucenik_za_izmjenu.razred = self.razred_entry.get()
+            self.osvjezi_listu_ucenika()
+
+
     def osvjezi_listu_ucenika(self):
-        self.lista_ucenika_text.delete(1.0, tk.END)
+        self.lista_ucenika_listbox.delete(0, tk.END)
         for ucenik in Ucenik.ucenici:
-            self.lista_ucenika_text.insert(tk.END, str(ucenik) + "\n")
+            self.lista_ucenika_listbox.insert(tk.END, str(ucenik) + "\n")
+
+
+
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = EvidencijaApp(root)
 root.mainloop()
-for ucenik in Ucenik.ucenici:
-    print(ucenik)
