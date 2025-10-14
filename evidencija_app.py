@@ -16,6 +16,9 @@ class EvidencijaApp:
         if ime and prezime and razred:
             Ucenik.ucenici.append(dodani_ucenik)
             self.osvjezi_listu_ucenika()
+            self.ime_entry.delete(0, tk.END)
+            self.prezime_entry.delete(0, tk.END)
+            self.razred_entry.delete(0, tk.END)
     def __init__(self, root):
         self.root = root
         self.root.title("Evidencija Učenika")
@@ -37,6 +40,9 @@ class EvidencijaApp:
         self.dodaj_button = tk.Button(self.unos_frame, text="Dodaj učenika", command=self.dodaj_ucenika)
         self.dodaj_button.grid(row=3, column=0, columnspan=2, pady=10)
 
+        self.spremi_izmjene_button = tk.Button(self.unos_frame, text="Spremi izmjene", command=self.spremi_izmjene)
+        self.spremi_izmjene_button.grid(row=4, column=0, columnspan=2, pady=10)
+
         self.lista_frame = tk.Frame(self.root, padx=10, pady=10)
         self.lista_frame.grid(row=1, column=0, sticky="nsew")
         self.lista_label = tk.Label(self.lista_frame, text="Popis učenika:")
@@ -52,13 +58,15 @@ class EvidencijaApp:
     def odaberite_ucenika(self):
         selected_index = self.lista_ucenika_listbox.curselection()
         if selected_index:
-            selected_ucenik = Ucenik.ucenici[selected_index[0]]
-            self.ime_entry.delete(0, tk.END) # Clear the current content
-            self.ime_entry.insert(0, selected_ucenik.ime) # Insert the selected student's name
-            self.prezime_entry.delete(0, tk.END) # Clear the current content
-            self.prezime_entry.insert(0, selected_ucenik.prezime) # Insert the selected student's last name
-            self.razred_entry.delete(0, tk.END) # Clear the current content
-            self.razred_entry.insert(0, selected_ucenik.razred) # Insert the selected student's class
+            index = selected_index[0]
+            selected_ucenik = Ucenik.ucenici[index]
+            self.ime_entry.delete(0, tk.END)
+            self.ime_entry.insert(0, selected_ucenik.ime)
+            self.prezime_entry.delete(0, tk.END)
+            self.prezime_entry.insert(0, selected_ucenik.prezime)
+            self.razred_entry.delete(0, tk.END)
+            self.razred_entry.insert(0, selected_ucenik.razred)
+            
 
     def spremi_izmjene(self):
         selected_index = self.lista_ucenika_listbox.curselection()
@@ -70,11 +78,12 @@ class EvidencijaApp:
             ucenik_za_izmjenu.razred = self.razred_entry.get()
             self.osvjezi_listu_ucenika()
 
-
     def osvjezi_listu_ucenika(self):
         self.lista_ucenika_listbox.delete(0, tk.END)
         for ucenik in Ucenik.ucenici:
             self.lista_ucenika_listbox.insert(tk.END, str(ucenik) + "\n")
+        self.lista_ucenika_listbox.bind("<<ListboxSelect>>", lambda event: self.odaberite_ucenika())
+
 
 
 
