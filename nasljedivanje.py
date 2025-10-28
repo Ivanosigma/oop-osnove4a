@@ -21,7 +21,6 @@ class menadzer(zaposlenik):
         print(f"Tim: {self.tim}")  
     def dodaj_clana_tima(self, ime_prezime):
         self.tim.append(ime_prezime)
-        self.prikazi_info()
      
     
 
